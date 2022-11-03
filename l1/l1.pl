@@ -54,5 +54,16 @@ average([X|Xs], C, S, A) :-
 
 max([X|Xs], M) :- max(Xs, M, X).
 max([], M, TM):- M is TM.
-max([X|Xs], M, TM) :- X > TM, TM2 is H, max(Xs, M, TM2).
+max([X|Xs], M, TM) :- X > TM, TM2 is X, max(Xs, M, TM2).
 max([X|Xs], M, TM) :- X < TM, max(Xs, M, TM).
+
+% 2.6) maxmin(List, Max, Min)
+% Max is the biggest element in List
+% Min is the smallest element in List
+% Suppose that List has at least one element
+
+maxmin([X|Xs], Max, Min) :- maxmin(Xs, Max, Min, X, X).
+maxmin([], Max, Min, Tmax, Tmin) :- Max is Tmax, Min is Tmin.
+maxmin([X|Xs], Max, Min, Tmax, Tmin) :- X >= Tmax, Tma2 is X, maxmin(Xs, Max, Min, Tma2, Tmin).
+maxmin([X|Xs], Max, Min, Tmax, Tmin) :- X < Tmax, X > Tmin, maxmin(Xs, Max, Min, Tmax, Tmin).
+maxmin([X|Xs], Max, Min, Tmax, Tmin) :- X =< Tmin, Tmi2 is X, maxmin(Xs, Max, Min, Tmax, Tmi2).
