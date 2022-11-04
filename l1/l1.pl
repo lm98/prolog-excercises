@@ -67,3 +67,43 @@ maxmin([], Max, Min, Tmax, Tmin) :- Max is Tmax, Min is Tmin.
 maxmin([X|Xs], Max, Min, Tmax, Tmin) :- X >= Tmax, Tma2 is X, maxmin(Xs, Max, Min, Tma2, Tmin).
 maxmin([X|Xs], Max, Min, Tmax, Tmin) :- X < Tmax, X > Tmin, maxmin(Xs, Max, Min, Tmax, Tmin).
 maxmin([X|Xs], Max, Min, Tmax, Tmin) :- X =< Tmin, Tmi2 is X, maxmin(Xs, Max, Min, Tmax, Tmi2).
+
+% 3.1) same(List1, List2)
+% are the two lists exactly the same?
+
+same([],[]).
+same([X|Xs], [X|Ys]) :- same(Xs, Ys).
+
+% 3.2) all_bigger(List1, List2)
+% all elements in List1 are bigger than those in List2, 1 by 1
+
+all_bigger([],[]).
+all_bigger([X|Xs], [Y|Ys]) :- X > Y, all_bigger(Xs, Ys).
+
+% 3.3) sublist(List1, List2)
+% List1 should contain elements all also in List2
+
+sublist([], List2).
+sublist([X|Xs], List2) :- search(X, List2), sublist(Xs, List2).
+
+% 4.1) seq(N, List)
+% example: seq(5, [0,0,0,0,0]).
+
+seq(0,[]).
+seq(N, [0|T]) :- N2 is N - 1, seq(N2, T).
+
+% 4.2) seqR(N, List)
+% example: seqR(4, [4, 3, 2, 1, 0]).
+
+seqR(-1, []).
+seqR(N, [N|Ns]) :- N2 is N - 1, seqR(N2, Ns).
+
+% 4.3.1) last(L, N, L2)
+% example: last([1, 2, 3], 5, [1, 2, 3, 5]).
+
+last([], N, N).
+last([X], N, [X, N]).
+last([X|Xs], N, [X|Ys]) :- last(Xs, N, Ys).
+
+% 4.3.2) seqR2(N, List)
+% example: seqR2(4, [0,1,2,3,4]).
