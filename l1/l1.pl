@@ -101,9 +101,11 @@ seqR(N, [N|Ns]) :- N2 is N - 1, seqR(N2, Ns).
 % 4.3.1) last(L, N, L2)
 % example: last([1, 2, 3], 5, [1, 2, 3, 5]).
 
-last([], N, N).
+last([], N, [N]).
 last([X], N, [X, N]).
 last([X|Xs], N, [X|Ys]) :- last(Xs, N, Ys).
 
 % 4.3.2) seqR2(N, List)
 % example: seqR2(4, [0,1,2,3,4]).
+seqR2(-1, []).
+seqR2(N, L) :- last(PL, N, L), N2 is N - 1, seqR2(N2, PL).
