@@ -46,3 +46,39 @@ inDegree(G, N, D):- inDegree(G, N, D, 0).
 inDegree([], N, D, TD) :- D is TD.
 inDegree([e(H1,N)|L], N, D, TD) :- TD2 is TD + 1, inDegree(L, N, D, TD2).
 inDegree([e(H1, H2)|L], N, D, TD) :- inDegree(L, N, D, TD).
+
+% 2.4.1) dropAllCopy(E, L, Ol)
+% A version of dropAll that copies the term we want to drop.
+% Useful for dropping terms that contain wildcards
+
+dropAllCopy(X, [], []).
+dropAllCopy(X, [X2|Xs], L) :- copy_term(X, X2), dropAllCopy(X, Xs, L), !.
+dropAllCopy(X, [H|T], [H|L]) :- dropAllCopy(X, T, L).
+
+% 2.4.2) dropNode(+ Graph , +Node , -OutGraph )
+% Drop all edges starting and leaving from a Node
+
+dropNode(G, N, OG) :- dropAllCopy(e(N,_), G, G2), dropAllCopy(e(_,N), G2, OG).
+
+% 2.5) reaching(+Graph, +Node, -List)
+% List contains all the nodes that can be reached in 1 step from Node
+
+% without member or findall:
+%reaching([], N, []).
+%reaching([e(N,M)|T], N, [M|L]) :- reaching(T, N, L), !.
+%reaching([e(N0,_)|T], N, L) :- reaching(T, N, L).
+
+reaching(G, N, L) :- findall(H2,member(e(N,H2), G), L).
+
+% 2.6) anypath(+Graph, +Node1, +Node2, -ListPath)
+% A path from Node1 to Node2.
+% If there are many paths, they are showed 1-by-1.
+anypath(G, N1, N2, L) :- anypath(G, N1, N2, L, G).
+anypath([e(N1, N3)|T], N1, N2, [e(N1,N3)|L], G) :- anypath(G, N3, N2, L, G).
+anypath([e(N3,N4)|T], N1, N2, L, G) :- anypath(T, N1, N2, L, G).
+anypath([e(N1,N2)|T], N1, N2, [e(N1,N2)], G).
+
+% 2.7) allreaching(+Graph, +Node, -List)
+% List contains all nodes that can be reached from Node
+
+allreaching(G, N ,L) :- anypath(G, N, _, L1), !, findall(H2,member(e(_,H2), L1), L).
