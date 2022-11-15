@@ -84,15 +84,13 @@ anypath([e(N1,N2)|T], N1, N2, [e(N1,N2)], G).
 allreaching(G, N ,L) :- anypath(G, N, _, L1), !, findall(H2,member(e(_,H2), L1), L).
 
 
-% 3.0) Table representation: table(???) ----> table([[x,o,...], [o,x,...], ...])
+% 3.0) 
+% MODEL
 %player
 player(x).
 player(o).
-opponent(x,o).
-opponent(o,x).
 
-% table
-% table([cell(1,1,o),cell(1,2,x),...])
+% table --> [cell(1,1,o),cell(1,2,x),...]
 row(1).
 row(2).
 row(3).
@@ -101,16 +99,20 @@ col(2).
 col(3).
 cell(X, Y, P) :- row(X), col(Y), player(P).
 
-searchCell([C|_], C) :- !.
-searchCell([H|T], C) :- searchCell(T, C).
-
-addCell([], X, Y, P, [cell(X, Y, P)]) :- cell(X,Y,P).
-addCell([H|T], X, Y, P, [H|T1]) :- opponent(P, P2), cell(X,Y,P2), H \= cell(X,Y,P2), addCell(T, X, Y, P, T1).
-
 %result
 result(nothing).
 result(even).
 result(win(P)) :- player(P).
+
+% ALGORITHMS
+searchCell([C|_], C) :- !.
+searchCell([H|T], C) :- searchCell(T, C).
+
+addCell([], X, Y, P, [cell(X, Y, P)]) :- cell(X,Y,P).
+addCell([H|T], X, Y, P, [H|T1]) :- 
+	cell(X,Y,P),
+	H \= cell(X,Y,_),
+	addCell(T, X, Y, P, T1).
 
 % 3.1) next(@Table, @Player, -Result, -NewTable)
 %la prossima mossa di player è una qualunque in una cella libera.
